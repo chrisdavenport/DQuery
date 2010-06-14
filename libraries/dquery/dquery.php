@@ -75,12 +75,12 @@ interface iDQueryAdapter
 interface iDQueryAdapterSelect
 {
 	public function select( DQuerySelect $select );				// Entry point for select statements
-	public function join( DQueryJoin $clause );					// Join clause
+	public function join( DQueryJoin $clause );					// JOIN clause
 	public function clauseColumns( DQueryClause $clause );		// Columns clause
 	public function clauseColumn( DQueryClause $clause );		// Column subclause
-	public function clauseTable( DQueryClause $clause );		// From clause
-	public function clauseWhere( DQueryClause $clause );		// Where clause
-	public function clauseOrderBy( DQueryClause $clause );		// Order by clause
+	public function clauseTable( DQueryClause $clause );		// FROM clause
+	public function clauseWhere( DQueryClause $clause );		// WHERE clause
+	public function clauseSort( DQueryClause $clause );			// ORDER BY clause
 }
 
 /**

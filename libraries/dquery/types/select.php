@@ -60,10 +60,10 @@ class DQuerySelect
 	/**
 	 * Order by clause.
 	 *
-	 * @var		DQueryClauseOrderBy
+	 * @var		DQueryClauseSort
 	 * @access	protected
 	 */
-	protected $orderby = null;
+	protected $sort = null;
 
 	/**
 	 * Group by clause.
@@ -207,13 +207,13 @@ class DQuerySelect
 	 * @param	array or string	One or more ORDER BY terms.
 	 * @return	DQuerySelect	This object for method chaining.
 	 */
-	public function orderby( $terms )
+	public function sort( $terms )
 	{
-		if (is_null( $this->orderby )) {
-			$this->orderby = DQuery::clause( 'orderby' );
+		if (is_null( $this->sort )) {
+			$this->sort = DQuery::clause( 'sort' );
 		}
 
-		$this->orderby->addTerm( $terms );
+		$this->sort->addTerm( $terms );
 		return $this;
 	}
 

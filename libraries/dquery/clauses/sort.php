@@ -17,7 +17,7 @@ jimport( 'dquery.clause' );
 * @package		DQuery
 */
 
-class DQueryClauseOrderBy
+class DQueryClauseSort
 	extends DQueryClause
 	implements iDQueryClause
 {

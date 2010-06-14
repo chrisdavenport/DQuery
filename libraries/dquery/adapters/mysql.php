@@ -57,9 +57,9 @@ class DQueryAdapterMySQL
 		}
 
 		// Optional ORDER BY clause.
-		$orderby = $select->get( 'orderby' );
-		if (!is_null( $orderby )) {
-			$output[] = (string) $orderby;
+		$sort = $select->get( 'sort' );
+		if (!is_null( $sort )) {
+			$output[] = (string) $sort;
 		}
 
 		return implode( ' ', $output );
@@ -177,10 +177,10 @@ class DQueryAdapterMySQL
 	/**
 	 * Returns an ORDER BY clause.
 	 *
-	 * @param	DQueryClauseOrderBy	Object.
+	 * @param	DQueryClauseSort	Object.
 	 * @return	string				An SQL clause statement.
 	 */
-	public function clauseOrderBy( DQueryClause $clause )
+	public function clauseSort( DQueryClause $clause )
 	{
 		$output = array();
 		$terms = $clause->get( 'terms' );
