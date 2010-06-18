@@ -39,12 +39,24 @@ class DQueryCondition
 	protected $glue = null;
 
 	/**
-	 * Constructor.
+	 * Array of substitutions to be made on the condition string.
+	 *
+	 * @var		array
+	 * @access	protected
 	 */
-	public function __construct( $cond = null, $glue = null )
+	protected $subs = array();
+
+	/**
+	 * Constructor.
+	 *
+	 * @param	mixed	String, DQueryCondition or DQueryRelation, or array of any of these.
+	 * @param	string	Optional glue to join the conditions together.
+	 * @param	array	Optional array of variable substitutions
+	 */
+	public function __construct( $cond = null, $glue = null, $subs = array() )
 	{
 		if ($cond) {
-			$this->add( $cond, $glue );
+			$this->add( $cond, $glue, $subs );
 		}
 	}
 
@@ -52,11 +64,12 @@ class DQueryCondition
 	 * Add a condition to the condition object.
 	 *
 	 * @param	mixed	String, DQueryCondition or DQueryRelation, or array of any of these.
-	 * @param	string	Glue to join the conditions together.
+	 * @param	string	Optional glue to join the conditions together.
+	 * @param	array	Optional array of variable substitutions
 	 * @return	DQueryCondition	This object for method chaining.
 	 * @access	public
 	 */
-	public function add( $cond, $glue = 'and' )
+	public function add( $cond, $glue = 'and', $subs = array() )
 	{
 		// Normalise the glue string.
 		$glue = strtoupper( trim( $glue ) );
@@ -64,7 +77,7 @@ class DQueryCondition
 		// If we have an array of conditions then add them recursively.
 		if (is_array( $cond )) {
 			foreach ($cond as $term) {
-				$this->add( $term, $glue );
+				$this->add( $term, $glue, $subs );
 			}
 			return $this;
 		}
@@ -75,12 +88,14 @@ class DQueryCondition
 		if (count( $this->conditions ) <= 1 || $this->glue == $glue || $this->glue == null) {
 			$this->conditions[] = $cond;
 			$this->glue = $glue ? $glue : $this->glue;
+			$this->subs = array_merge( $this->subs, $subs );
 			return $this;
 		}
 
 		// Otherwise, the glue is incompatible, so we create a new condition object.
 		$this->conditions = array( clone( $this ), $cond );
 		$this->glue = $glue;
+		$this->subs = $subs;
 		return $this;
 	}
 
@@ -88,12 +103,13 @@ class DQueryCondition
 	 * Add condition to condition object with a logical AND.
 	 *
 	 * @param	mixed	String, DQueryCondition or DQueryRelation, or array of any of these.
+	 * @param	array	Optional array of variable substitutions
 	 * @return	DQueryCondition	This object for method chaining.
 	 * @access	public
 	 */
-	public function qand( $cond )
+	public function qand( $cond, $subs = array() )
 	{
-		$this->add( $cond, 'AND' );
+		$this->add( $cond, 'AND', $subs );
 		return $this;
 	}
 
@@ -101,12 +117,13 @@ class DQueryCondition
 	 * Add condition to condition object with a logical OR.
 	 *
 	 * @param	mixed	String, DQueryCondition or DQueryRelation, or array of any of these.
+	 * @param	array	Optional array of variable substitutions
 	 * @return	DQueryCondition	This object for method chaining.
 	 * @access	public
 	 */
-	public function qor( $cond )
+	public function qor( $cond, $subs = array() )
 	{
-		$this->add( $cond, 'OR' );
+		$this->add( $cond, 'OR', $subs );
 		return $this;
 	}
 
@@ -114,12 +131,13 @@ class DQueryCondition
 	 * Add condition to condition object with a logical XOR.
 	 *
 	 * @param	mixed	String, DQueryCondition or DQueryRelation, or array of any of these.
+	 * @param	array	Optional array of variable substitutions
 	 * @return	DQueryCondition	This object for method chaining.
 	 * @access	public
 	 */
-	public function qxor( $cond )
+	public function qxor( $cond, $subs = array() )
 	{
-		$this->add( $cond, 'XOR' );
+		$this->add( $cond, 'XOR', $subs );
 		return $this;
 	}
 
@@ -127,12 +145,13 @@ class DQueryCondition
 	 * Add condition to condition object with a logical NOT.
 	 *
 	 * @param	mixed	String, DQueryCondition or DQueryRelation, or array of any of these.
+	 * @param	array	Optional array of variable substitutions
 	 * @return	DQueryCondition	This object for method chaining.
 	 * @access	public
 	 */
-	public function qnot( $cond )
+	public function qnot( $cond, $subs = array() )
 	{
-		$this->add( $cond, 'NOT' );
+		$this->add( $cond, 'NOT', $subs );
 		return $this;
 	}
 

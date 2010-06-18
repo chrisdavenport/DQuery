@@ -33,12 +33,12 @@ interface iDQueryClause
  */
 interface iDQueryCondition
 {
-	public function get( $property );				// Get property from object
-	public function add( $cond, $glue = null );		// Add a condition
-	public function qand( $cond );					// AND
-	public function qor( $cond );					// OR
-	public function qxor( $cond );					// XOR
-	public function qnot( $cond );					// NOT
+	public function get( $property );								// Get property from object
+	public function add( $cond, $glue = null, $subs = array() );	// Add a condition
+	public function qand( $cond, $subs = array() );					// AND
+	public function qor( $cond, $subs = array() );					// OR
+	public function qxor( $cond, $subs = array() );					// XOR
+	public function qnot( $cond, $subs = array() );					// NOT
 
 }
 
@@ -66,7 +66,7 @@ interface iDQueryRelation
  */
 interface iDQueryAdapter
 {
-	public function condition( DQueryCondition $clause );		// Condition clause
+	public function condition( DQueryCondition $condition );	// Condition clause
 }
 
 /*
@@ -75,12 +75,13 @@ interface iDQueryAdapter
 interface iDQueryAdapterSelect
 {
 	public function select( DQuerySelect $select );				// Entry point for select statements
-	public function join( DQueryJoin $clause );					// JOIN clause
+	public function join( DQueryJoin $join );					// Join clause
 	public function clauseColumns( DQueryClause $clause );		// Columns clause
 	public function clauseColumn( DQueryClause $clause );		// Column subclause
 	public function clauseTable( DQueryClause $clause );		// FROM clause
 	public function clauseWhere( DQueryClause $clause );		// WHERE clause
 	public function clauseSort( DQueryClause $clause );			// ORDER BY clause
+	public function clauseGroupby( DQueryClause $clause );		// GROUP BY clause
 }
 
 /**
@@ -155,17 +156,18 @@ class DQuery
 	/**
 	 * Factory method which returns a reference to a freshly-minted condition object.
 	 *
-	 * @param	mixed			Condition (string, object or array of strings or objects).
-	 * @param	string			Optional glue.
+	 * @param	mixed			String, DQueryCondition or DQueryRelation, or array of any of these.
+	 * @param	string			Optional glue to join the conditions together.
+	 * @param	array			Optional array of variable substitutions
 	 * @return	DQueryCondition	A condtion object.
 	 * @access	public
 	 */
-	public static function condition( $cond = null, $glue = 'and' )
+	public static function condition( $cond = null, $glue = 'and', $subs = array() )
 	{
 		$instance = self::getInstance( '', 'condition' );
 
 		if ($cond) {
-			$instance->add( $cond, $glue );
+			$instance->add( $cond, $glue, $subs );
 		}
 
 		return $instance;

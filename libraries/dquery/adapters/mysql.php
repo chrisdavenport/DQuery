@@ -125,7 +125,7 @@ class DQueryAdapterMySQL
 	 */
 	public function clauseColumn( DQueryClause $clause )
 	{
-		$output = $clause->get( 'name' );
+		$output = $this->substitute( array(), $clause->get( 'name' ) );
 		$alias = $clause->get( 'alias' );
 		if ($alias) {
 			$output .= ' AS ' . $alias;
@@ -220,6 +220,7 @@ class DQueryAdapterMySQL
 	{
 		$conditions = $clause->get( 'conditions' );
 		$glue = $clause->get( 'glue' );
+		$subs = $clause->get( 'subs' );
 
 		// Recursively convert to string type.
 		$output = array();
@@ -232,14 +233,35 @@ class DQueryAdapterMySQL
 				$return = '';
 				break;
 			case 1:
-				$return = $conditions[0];
+				$return = $this->substitute( $subs, $conditions[0] );
 				break;
 			default:
-				$return = '(' . implode( ' '.$glue.' ', $output ) . ')';
+				$return = '(' . $this->substitute( $subs, implode( ' '.$glue.' ', $output ) ) . ')';
 				break;
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Replace substition codes and perform quoting in the condition.
+	 *
+	 * @param	array	Array of substitions to be made.
+	 * @param	string	String to be altered.
+	 * @return	string	String after substitution.
+	 */
+	protected function substitute( $needles, $haystack )
+	{
+		$source = $target = array();
+		foreach ($needles as $key => $value) {
+			$source[] = '{'.$key.'}';
+			$target[] = is_numeric( $value ) ? $value : "'".$value."'";
+		}
+
+		$haystack = str_replace( $source, $target, $haystack );
+		$haystack = preg_replace( '/\[(.*?)\]/', '`${1}`', $haystack );
+
+		return $haystack;
 	}
 
 }
