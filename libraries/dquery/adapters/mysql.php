@@ -23,6 +23,19 @@ class DQueryAdapterMySQL
 	implements iDQueryAdapter, iDQueryAdapterSelect
 {
 	/**
+	 * Base SQL adapter.
+	 */
+	protected $generic = null;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct()
+	{
+		$this->generic = DQuery::adapter()->getAdapter( 'sql' );
+	}
+
+	/**
 	 * Returns a SELECT statement.
 	 *
 	 * @param	DQuerySelect	Object.
@@ -30,39 +43,7 @@ class DQueryAdapterMySQL
 	 */
 	public function select( DQuerySelect $select )
 	{
-		$output = array( 'SELECT' );
-
-		// Columns to be included in result set.
-		$output[] = (string) $select->get( 'columns' );
-
-		// FROM clause.
-		$output[] = (string) $select->get( 'table' );
-
-		// JOIN clause.
-		$joins = $select->get( 'join' );
-		foreach ($joins as $join) {
-			$output[] = (string) $join;
-		}
-
-		// Optional WHERE clause.
-		$where = $select->get( 'where' );
-		if (!is_null( $where )) {
-			$output[] = (string) $where;
-		}
-
-		// Optional GROUP BY clause.
-		$groupby = $select->get( 'groupby' );
-		if (!is_null( $groupby )) {
-			$output[] = (string) $groupby;
-		}
-
-		// Optional ORDER BY clause.
-		$sort = $select->get( 'sort' );
-		if (!is_null( $sort )) {
-			$output[] = (string) $sort;
-		}
-
-		return implode( ' ', $output );
+		return $this->generic->select( $select );
 	}
 
 	/**
@@ -73,23 +54,7 @@ class DQueryAdapterMySQL
 	 */
 	public function join( DQueryJoin $join )
 	{
-		$table = $join->get( 'table' );
-		if ($table instanceof JTable) {
-			$name = $table->getTableName();
-		} else {
-			$name = $join->get( 'name' );
-		}
-		$alias = $join->get( 'alias' );
-		$output = "\n" . strtoupper( $join->get( 'type' ) ) . ' JOIN ';
-		$output .= $alias ? $name.' AS '.$alias : $name;
-
-		// ON conditions.
-		$on = $join->get( 'on' );
-		if (!is_null( $on )) {
-			$output .= ' ON ' . (string) $on;
-		}
-
-		return $output;
+		return $this->generic->join( $join );
 	}
 
 	/**
@@ -100,21 +65,7 @@ class DQueryAdapterMySQL
 	 */
 	public function clauseColumns( DQueryClause $clause )
 	{
-		$terms = $clause->get( 'terms' );
-
-		// Default is to include all columns.
-		if (empty( $terms )) {
-			return '*';
-		}
-
-		// Construct array of columns specifications.
-		$output = array();
-		foreach ($terms as $term) {
-			$output[] = (string) $term;
-		}
-
-		// Return concatenated list of columns specifications.
-		return implode( ', ', $output );
+		return $this->generic->clauseColumns( $clause );
 	}
 
 	/**
@@ -125,13 +76,7 @@ class DQueryAdapterMySQL
 	 */
 	public function clauseColumn( DQueryClause $clause )
 	{
-		$output = $this->substitute( array(), $clause->get( 'name' ) );
-		$alias = $clause->get( 'alias' );
-		if ($alias) {
-			$output .= ' AS ' . $alias;
-		}
-
-		return $output;
+		return $this->generic->clauseColumn( $clause );
 	}
 
 	/**
@@ -142,23 +87,7 @@ class DQueryAdapterMySQL
 	 */
 	public function clauseTable( DQueryClause $clause )
 	{
-		$tables = $clause->get( 'table' );
-
-		$output = array();
-		foreach ($tables as $table) {
-			$instance = $table->get( 'table' );
-			if ($instance instanceof JTable) {
-				$name = $instance->getTableName();
-			} else {
-				$name = $table->get( 'name' );
-			}
-			$alias = $table->get( 'alias' );
-			$output[] = $alias ? $name.' AS '.$alias : $name;
-		}
-
-		$output = "\nFROM " . implode( ', ', $output );
-
-		return $output;
+		return $this->generic->clauseTable( $clause );
 	}
 
 	/**
@@ -169,9 +98,7 @@ class DQueryAdapterMySQL
 	 */
 	public function clauseWhere( DQueryClause $clause )
 	{
-		$condition = $clause->get( 'condition' );
-
-		return "\nWHERE " . (string) $condition;
+		return $this->generic->clauseWhere( $clause );
 	}
 
 	/**
@@ -182,14 +109,7 @@ class DQueryAdapterMySQL
 	 */
 	public function clauseSort( DQueryClause $clause )
 	{
-		$output = array();
-		$terms = $clause->get( 'terms' );
-
-		foreach ($terms as $name => $order) {
-			$output[] = ($order == 'ASC') ? $name : $name.' '.$order;
-		}
-
-		return "\nORDER BY " . implode( ', ', $output );
+		return $this->generic->clauseSort( $clause );
 	}
 
 	/**
@@ -200,14 +120,7 @@ class DQueryAdapterMySQL
 	 */
 	public function clauseGroupBy( DQueryClause $clause )
 	{
-		$output = array();
-		$terms = $clause->get( 'terms' );
-
-		foreach ($terms as $term) {
-			$output[] = $term;
-		}
-
-		return "\nGROUP BY " . implode( ', ', $output );
+		return $this->generic->clauseGroupBy( $clause );
 	}
 
 	/**
@@ -218,29 +131,7 @@ class DQueryAdapterMySQL
 	 */
 	public function condition( DQueryCondition $clause )
 	{
-		$conditions = $clause->get( 'conditions' );
-		$glue = $clause->get( 'glue' );
-		$subs = $clause->get( 'subs' );
-
-		// Recursively convert to string type.
-		$output = array();
-		foreach ($conditions as $condition ) {
-			$output[] = (string) $condition;
-		}
-
-		switch (count( $conditions )) {
-			case 0:
-				$return = '';
-				break;
-			case 1:
-				$return = $this->substitute( $subs, $conditions[0] );
-				break;
-			default:
-				$return = '(' . $this->substitute( $subs, implode( ' '.$glue.' ', $output ) ) . ')';
-				break;
-		}
-
-		return $return;
+		return $this->generic->condition( $clause );
 	}
 
 	/**
@@ -250,7 +141,7 @@ class DQueryAdapterMySQL
 	 * @param	string	String to be altered.
 	 * @return	string	String after substitution.
 	 */
-	protected function substitute( $needles, $haystack )
+	public function substitute( $needles, $haystack )
 	{
 		$source = $target = array();
 		foreach ($needles as $key => $value) {

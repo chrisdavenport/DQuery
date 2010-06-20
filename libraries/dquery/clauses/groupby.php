@@ -17,7 +17,9 @@ jimport( 'dquery.clause' );
 * @package		DQuery
 */
 
-class DQueryClauseGroupBy extends DQueryClause implements iDQueryClause
+class DQueryClauseGroupBy
+	extends DQueryClause
+	implements iDQueryClause
 {
 	/**
 	 * Terms array.

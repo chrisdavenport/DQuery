@@ -54,6 +54,14 @@ class DQueryJoin
 	protected $table = null;
 
 	/**
+	 * On condition object.
+	 *
+	 * @var		array
+	 * @access	protected
+	 */
+	protected $on = null;
+
+	/**
 	 * Set join type.
 	 *
 	 * @param	string		Join type.
@@ -64,14 +72,6 @@ class DQueryJoin
 		$this->set( 'type', $type );
 		return $this;
 	}
-
-	/**
-	 * On condition object.
-	 *
-	 * @var		array
-	 * @access	protected
-	 */
-	protected $on = null;
 
 	/**
 	 * Set join table

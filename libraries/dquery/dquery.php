@@ -187,22 +187,21 @@ class DQuery
 	}
 
 	/**
-	 * Factory method which returns a reference to a syntax object,
-	 * only creating it if it doesn't already exist.
+	 * Factory method which returns a reference to the global adapter
+	 * object, only creating it if it doesn't already exist.
 	 *
-	 * @param	string			Name of syntax (eg. 'mysql').
-	 * @return	DQuerySyntax	A syntax object.
+	 * @return	DQueryAdapter	Global query adapter object.
 	 * @access	public
 	 */
-	public static function adapter( $type )
+	public static function adapter()
 	{
-		static $instances = array();
+		static $adapter = null;
 
-		if (!isset( $instances[$type] )) {
-			$instances[$type] = self::getInstance( 'adapter', $type );
+		if (!isset( $adapter )) {
+			$adapter = self::getInstance( '', 'adapter' );
 		}
 
-		return $instances[$type];
+		return $adapter;
 	}
 
 	/**

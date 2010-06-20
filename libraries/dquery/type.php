@@ -19,7 +19,8 @@ defined( 'JPATH_BASE' ) or die();
 * @package		DQuery
 */
 
-abstract class DQueryType extends JObject
+abstract class DQueryType
+	extends JObject
 {
 	/**
 	 * The Joomla database object associated with this query.
@@ -77,9 +78,9 @@ abstract class DQueryType extends JObject
 	 * @return	DQuery	This object for method chaining.
 	 * @access	public
 	 */
-	public function setAdapter( $syntax = 'mysql' )
+	public function setAdapter( $type = 'mysql' )
 	{
-		$this->adapter = $syntax;
+		DQuery::adapter()->set( 'type', $type );
 		return $this;
 	}
 
@@ -91,7 +92,7 @@ abstract class DQueryType extends JObject
 	 */
 	public function getAdapter()
 	{
-		return $this->adapter;
+		return DQuery::adapter()->get( 'type' );
 	}
 
 	/**
@@ -101,7 +102,7 @@ abstract class DQueryType extends JObject
 	 */
 	public function __toString()
 	{
-		$adapter = DQuery::adapter( $this->getAdapter() );
+		$adapter = DQuery::adapter()->getAdapter();
 		$class = get_class( $this );
 		$method = substr( $class, 6 );		// Remove "DQuery" prefix from class name
 
