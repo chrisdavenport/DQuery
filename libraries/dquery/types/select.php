@@ -68,10 +68,10 @@ class DQuerySelect
 	/**
 	 * Group by clause.
 	 *
-	 * @var		DQueryClauseGroupBy
+	 * @var		DQueryClauseGroup
 	 * @access	protected
 	 */
-	protected $groupby = null;
+	protected $group = null;
 
 	/**
 	 * Constructor.
@@ -223,13 +223,13 @@ class DQuerySelect
 	 * @param	array or string	One or more GROUP BY terms.
 	 * @return	DQuerySelect	This object for method chaining.
 	 */
-	public function groupby( $terms )
+	public function group( $terms )
 	{
-		if (is_null( $this->groupby )) {
-			$this->groupby = DQuery::clause( 'groupby' );
+		if (is_null( $this->group )) {
+			$this->group = DQuery::clause( 'group' );
 		}
 
-		$this->groupby->addTerm( $terms );
+		$this->group->addTerm( $terms );
 		return $this;
 	}
 

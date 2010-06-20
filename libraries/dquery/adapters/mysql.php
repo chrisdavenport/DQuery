@@ -119,9 +119,9 @@ class DQueryAdapterMySQL
 	 * @param	DQueryClause	Object.
 	 * @return	string			An SQL clause statement.
 	 */
-	public function clauseGroupBy( DQueryClause $clause )
+	public function clauseGroup( DQueryClause $clause )
 	{
-		return $this->generic->clauseGroupBy( $clause );
+		return $this->generic->clauseGroup( $clause );
 	}
 
 	/**

@@ -81,7 +81,7 @@ interface iDQueryAdapterSelect
 	public function clauseTable( DQueryClause $clause );		// FROM clause
 	public function clauseWhere( DQueryClause $clause );		// WHERE clause
 	public function clauseSort( DQueryClause $clause );			// ORDER BY clause
-	public function clauseGroupby( DQueryClause $clause );		// GROUP BY clause
+	public function clauseGroup( DQueryClause $clause );		// GROUP BY clause
 }
 
 /**
