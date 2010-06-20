@@ -96,7 +96,6 @@ class DQuery
 	 * Factory method which returns a reference to a freshly-minted query object.
 	 *
 	 * Options:-
-	 * 	database	A JDatabase object to associate with the query.
 	 * 	table		A JTable object to associate with the query.
 	 *
 	 * @param	string	Category (eg. 'types', 'clauses' ).
@@ -108,10 +107,6 @@ class DQuery
 	public static function query( $type, $options = array() )
 	{
 		$instance = self::getInstance( 'type', $type, $options );
-
-		// Set the default database object to use.
-		$database = isset( $options['database'] ) ? $options['database'] : JFactory::getDBO();
-		$instance->setDatabase( $database );
 
 		// Set the database table if specified.
 		if (isset( $options['table'] )) {
@@ -125,7 +120,6 @@ class DQuery
 	 * Factory method which returns a reference to a freshly-minted query object.
 	 *
 	 * Options:-
-	 * 	database	A JDatabase object to associate with the query.
 	 * 	table		A JTable object to associate with the query.
 	 *
 	 * @param	string	Category (eg. 'types', 'clauses' ).
@@ -208,7 +202,6 @@ class DQuery
 	 * Factory method which returns a reference to a freshly-minted query object.
 	 *
 	 * Options:-
-	 * 	database	A JDatabase object to associate with the query.
 	 * 	table		A JTable object to associate with the query.
 	 *
 	 * @param	string	Category (eg. 'types', 'clauses' ).

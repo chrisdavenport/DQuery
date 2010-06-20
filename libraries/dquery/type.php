@@ -47,31 +47,6 @@ abstract class DQueryType
 	protected $adapter = 'mysql';
 
 	/**
-	 * Associates the query object with a Joomla database object.
-	 *
-	 * @param	JDatabase	Joomla database object.
-	 * @param	array	Optional array of options.
-	 * @return	DQuery	This object for method chaining.
-	 * @access	publicclause->get( '
-	 */
-	public function setDatabase( JDatabase $database, $options = array() )
-	{
-		$this->database = $database;
-		return $this;
-	}
-
-	/**
-	 * Returns the Joomla database object associated with the query.
-	 *
-	 * @return	JDatabase	The Joomla database object
-	 * @access	public
-	 */
-	public function getDatabase()
-	{
-		return $this->database;
-	}
-
-	/**
 	 * Sets the query syntax to be used.
 	 *
 	 * @param	string	Name of the syntax to use.
