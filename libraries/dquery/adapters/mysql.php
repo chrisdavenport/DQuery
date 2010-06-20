@@ -23,7 +23,7 @@ class DQueryAdapterMySQL
 	implements iDQueryAdapter, iDQueryAdapterSelect
 {
 	/**
-	 * Base SQL adapter.
+	 * Generic SQL adapter.
 	 */
 	protected $generic = null;
 
@@ -32,6 +32,7 @@ class DQueryAdapterMySQL
 	 */
 	public function __construct()
 	{
+		// Get an instance of the generic SQL adapter.
 		$this->generic = DQuery::adapter()->getAdapter( 'sql' );
 	}
 
