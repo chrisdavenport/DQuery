@@ -233,4 +233,21 @@ class DQuerySelect
 		return $this;
 	}
 
+	/**
+	 * Adds a pagination clause to the query.
+	 *
+	 * @param	integer			Page number being requested.
+	 * @param	integer			Results per page (0 = use current).
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function page( $pageNumber = 0, $pageSize = 0 )
+	{
+		if (is_null( $this->page )) {
+			$this->page = DQuery::clause( 'page' );
+		}
+
+		$this->page->addTerm( '', array( 'pageNumber' => $pageNumber, 'pageSize' => $pageSize ) );
+		return $this;
+	}
+
 }

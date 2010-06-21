@@ -20,6 +20,6 @@ defined( 'JPATH_BASE' ) or die();
 */
 
 abstract class DQueryClause
-	extends DQueryType
+	extends DQueryObject
 {
 }

@@ -19,7 +19,7 @@ defined( 'JPATH_BASE' ) or die();
 */
 
 class DQueryCondition
-	extends DQueryType
+	extends DQueryObject
 	implements iDQueryCondition
 {
 	/**

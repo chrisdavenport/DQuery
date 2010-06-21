@@ -125,6 +125,17 @@ class DQueryAdapterMySQL
 	}
 
 	/**
+	 * Returns a LIMIT clause.
+	 *
+	 * @param	DQueryClause	Object.
+	 * @return	string			An SQL clause statement.
+	 */
+	public function clausePage( DQueryClause $clause )
+	{
+		return $this->generic->clausePage( $clause );
+	}
+
+	/**
 	 * Returns a condition as a string.
 	 *
 	 * @param	DQueryCondition	Object.

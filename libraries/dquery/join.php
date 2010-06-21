@@ -19,7 +19,7 @@ defined( 'JPATH_BASE' ) or die();
 */
 
 class DQueryJoin
-	extends DQueryType
+	extends DQueryObject
 {
 	/**
 	 * Table name.
