@@ -74,6 +74,14 @@ class DQuerySelect
 	protected $group = null;
 
 	/**
+	 * Keywords (eg. "DISTINCT").
+	 *
+	 * @var		array
+	 * @access	protected
+	 */
+	protected $keywords = array();
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct()
@@ -99,15 +107,31 @@ class DQuerySelect
 	}
 
 	/**
-	 * Adds a table name to the SELECT query.
+	 * Adds one or more term specifications to the GROUP BY clause.
+	 *
+	 * @param	array or string	One or more GROUP BY terms.
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function group( $terms )
+	{
+		if (is_null( $this->group )) {
+			$this->group = DQuery::clause( 'group' );
+		}
+
+		$this->group->addTerm( $terms );
+		return $this;
+	}
+
+	/**
+	 * Adds an INNER JOIN to the SELECT query.
 	 *
 	 * @param	mixed			JTable object or table name.
 	 * @param	boolean			True if there should be a JTable object.
 	 * @return	DQuerySelect	This object for method chaining.
 	 */
-	public function table( $tables, $jtable = true )
+	public function innerjoin( $table, $jtable = true )
 	{
-		$this->table->addTerm( $tables, array( 'jtable' => $jtable ) );
+		$this->join( 'inner', $table, $jtable );
 		return $this;
 	}
 
@@ -134,6 +158,21 @@ class DQuerySelect
 	}
 
 	/**
+	 * Adds one or more keywords to the SELECT query.
+	 *
+	 * @param	mixed			String or array of strings containing keywords.
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function keywords( $keywords )
+	{
+		$keywords = (array) $keywords;
+		foreach ($keywords as $keyword) {
+			$this->keywords[] = $keyword;
+		}
+		return $this;
+	}
+
+	/**
 	 * Adds a LEFT JOIN to the SELECT query.
 	 *
 	 * @param	mixed			JTable object or table name.
@@ -143,32 +182,6 @@ class DQuerySelect
 	public function leftjoin( $table, $jtable = true )
 	{
 		$this->join( 'left', $table, $jtable );
-		return $this;
-	}
-
-	/**
-	 * Adds a RIGHT JOIN to the SELECT query.
-	 *
-	 * @param	mixed			JTable object or table name.
-	 * @param	boolean			True if there should be a JTable object.
-	 * @return	DQuerySelect	This object for method chaining.
-	 */
-	public function rightjoin( $table, $jtable = true )
-	{
-		$this->join( 'right', $table, $jtable );
-		return $this;
-	}
-
-	/**
-	 * Adds an INNER JOIN to the SELECT query.
-	 *
-	 * @param	mixed			JTable object or table name.
-	 * @param	boolean			True if there should be a JTable object.
-	 * @return	DQuerySelect	This object for method chaining.
-	 */
-	public function innerjoin( $table, $jtable = true )
-	{
-		$this->join( 'inner', $table, $jtable );
 		return $this;
 	}
 
@@ -186,18 +199,32 @@ class DQuerySelect
 	}
 
 	/**
-	 * Adds one or more term specifications to the WHERE clause.
+	 * Adds a RIGHT JOIN to the SELECT query.
 	 *
-	 * @param	array or string	One or more WHERE terms.
+	 * @param	mixed			JTable object or table name.
+	 * @param	boolean			True if there should be a JTable object.
 	 * @return	DQuerySelect	This object for method chaining.
 	 */
-	public function where( $terms, $glue = 'AND' )
+	public function rightjoin( $table, $jtable = true )
 	{
-		if (is_null( $this->where )) {
-			$this->where = DQuery::clause( 'where' );
+		$this->join( 'right', $table, $jtable );
+		return $this;
+	}
+
+	/**
+	 * Adds a pagination clause to the query.
+	 *
+	 * @param	integer			Page number being requested.
+	 * @param	integer			Results per page (0 = use current).
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function page( $pageNumber = 0, $pageSize = 0 )
+	{
+		if (is_null( $this->page )) {
+			$this->page = DQuery::clause( 'page' );
 		}
 
-		$this->where->addTerm( $terms, array( 'glue' => $glue ) );
+		$this->page->addTerm( '', array( 'pageNumber' => $pageNumber, 'pageSize' => $pageSize ) );
 		return $this;
 	}
 
@@ -218,35 +245,31 @@ class DQuerySelect
 	}
 
 	/**
-	 * Adds one or more term specifications to the GROUP BY clause.
+	 * Adds a table name to the SELECT query.
 	 *
-	 * @param	array or string	One or more GROUP BY terms.
+	 * @param	mixed			JTable object or table name.
+	 * @param	boolean			True if there should be a JTable object.
 	 * @return	DQuerySelect	This object for method chaining.
 	 */
-	public function group( $terms )
+	public function table( $tables, $jtable = true )
 	{
-		if (is_null( $this->group )) {
-			$this->group = DQuery::clause( 'group' );
-		}
-
-		$this->group->addTerm( $terms );
+		$this->table->addTerm( $tables, array( 'jtable' => $jtable ) );
 		return $this;
 	}
 
 	/**
-	 * Adds a pagination clause to the query.
+	 * Adds one or more term specifications to the WHERE clause.
 	 *
-	 * @param	integer			Page number being requested.
-	 * @param	integer			Results per page (0 = use current).
+	 * @param	array or string	One or more WHERE terms.
 	 * @return	DQuerySelect	This object for method chaining.
 	 */
-	public function page( $pageNumber = 0, $pageSize = 0 )
+	public function where( $terms, $glue = 'AND' )
 	{
-		if (is_null( $this->page )) {
-			$this->page = DQuery::clause( 'page' );
+		if (is_null( $this->where )) {
+			$this->where = DQuery::clause( 'where' );
 		}
 
-		$this->page->addTerm( '', array( 'pageNumber' => $pageNumber, 'pageSize' => $pageSize ) );
+		$this->where->addTerm( $terms, array( 'glue' => $glue ) );
 		return $this;
 	}
 
