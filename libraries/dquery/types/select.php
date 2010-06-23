@@ -23,7 +23,7 @@ jimport( 'dquery.type' );
 
 class DQuerySelect
 	extends DQueryType
-	implements iDQueryType
+	implements iDQueryType, Iterator
 {
 	/**
 	 * Columns clause.
@@ -74,6 +74,14 @@ class DQuerySelect
 	protected $group = null;
 
 	/**
+	 * Pagination clause.
+	 *
+	 * @var		DQueryClausePage
+	 * @access	protected
+	 */
+	protected $page = null;
+
+	/**
 	 * Keywords (eg. "DISTINCT").
 	 *
 	 * @var		array
@@ -103,6 +111,20 @@ class DQuerySelect
 	public function columns( $columns )
 	{
 		$this->columns->addTerm( $columns );
+		return $this;
+	}
+
+	/**
+	 * Returns current page (Iterator interface).
+	 *
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function current()
+	{
+		if (is_null( $this->page )) {
+			$this->page = DQuery::clause( 'page' );
+		}
+
 		return $this;
 	}
 
@@ -155,6 +177,20 @@ class DQuerySelect
 		// Create a new join object and add it.
 		$this->join[] = DQuery::join( $table )->type( $type );
 		return $this;
+	}
+
+	/**
+	 * Returns current page number (Iterator interface).
+	 *
+	 * @return	integer		Current page number.
+	 */
+	public function key()
+	{
+		if (is_null( $this->page )) {
+			$this->page = DQuery::clause( 'page' );
+		}
+
+		return $this->page->key();
 	}
 
 	/**
@@ -218,13 +254,47 @@ class DQuerySelect
 	 * @param	integer			Results per page (0 = use current).
 	 * @return	DQuerySelect	This object for method chaining.
 	 */
-	public function page( $pageNumber = 0, $pageSize = 0 )
+	public function page( $page = null )
+	{
+		if (is_null( $page )) {
+			$this->page = DQuery::clause( 'page' );
+		} else {
+			$this->page = $page;
+		}
+
+//		$this->page->addTerm( '', array( 'pageNumber' => $pageNumber, 'pageSize' => $pageSize ) );
+		return $this;
+	}
+
+	/**
+	 * Select the next page.
+	 *
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function next()
 	{
 		if (is_null( $this->page )) {
 			$this->page = DQuery::clause( 'page' );
 		}
 
-		$this->page->addTerm( '', array( 'pageNumber' => $pageNumber, 'pageSize' => $pageSize ) );
+		$this->page->next();
+
+		return $this;
+	}
+
+	/**
+	 * Rewind to first page (Iterator interface).
+	 *
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function rewind()
+	{
+		if (is_null( $this->page )) {
+			$this->page = DQuery::clause( 'page' );
+		}
+
+		$this->page->rewind();
+
 		return $this;
 	}
 
@@ -271,6 +341,21 @@ class DQuerySelect
 
 		$this->where->addTerm( $terms, array( 'glue' => $glue ) );
 		return $this;
+	}
+
+	/**
+	 * Is page valid? (Iterator interface).
+	 * This must return false to terminate the iterator.
+	 *
+	 * @return	Boolean		True if okay to contibue iterating; false to terminate iteration.
+	 */
+	public function valid()
+	{
+		if (is_null( $this->page )) {
+			$this->page = DQuery::clause( 'page' );
+		}
+
+		return $this->page->valid();
 	}
 
 }
