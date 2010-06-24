@@ -23,7 +23,7 @@ jimport( 'dquery.type' );
 
 class DQuerySelect
 	extends DQueryType
-	implements iDQueryType, Iterator
+	implements iDQueryType, SeekableIterator
 {
 	/**
 	 * Columns clause.
@@ -294,6 +294,23 @@ class DQuerySelect
 		}
 
 		$this->page->rewind();
+
+		return $this;
+	}
+
+	/**
+	 * Seeks the page requested (Iterator interface).
+	 *
+	 * @param	integer			Page number requested.
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function seek( $pageNumber )
+	{
+		if (is_null( $this->page )) {
+			$this->page = DQuery::clause( 'page' );
+		}
+
+		$this->page->seek( $pageNumber );
 
 		return $this;
 	}
