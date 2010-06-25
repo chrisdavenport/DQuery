@@ -62,6 +62,14 @@ class DQueryJoin
 	protected $on = null;
 
 	/**
+	 * Using clause object.
+	 *
+	 * @var		DQueryClauseColumns object
+	 * @access	protected
+	 */
+	protected $using = null;
+
+	/**
 	 * Set join type.
 	 *
 	 * @param	string		Join type.
@@ -140,6 +148,31 @@ class DQueryJoin
 
 		// Add terms to condition object.
 		$this->on->add( $terms, $glue );
+
+		return $this;
+	}
+
+	/**
+	 * Adds one or more column specifications to the USING clause.
+	 *
+	 * @param	array or string	One or more columns.
+	 * @return	DQuerySelect	This object for method chaining.
+	 */
+	public function using( $columns )
+	{
+		// If we have been passed a columns object then just add it.
+		if ($columns instanceof DQueryClauseColumns) {
+			$this->using = $columns;
+			return $this;
+		}
+
+		// Create a columns object if one doesn't already exist.
+		if (is_null( $this->columns )) {
+			$this->using = DQuery::clause( 'columns' );
+		}
+
+		// Add the columns to the columns object.
+		$this->using->addTerm( $columns );
 
 		return $this;
 	}

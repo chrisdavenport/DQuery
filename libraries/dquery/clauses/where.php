@@ -32,8 +32,9 @@ class DQueryClauseWhere
 	/**
 	 * Add a term to the query clause.
 	 *
-	 * @param	string or array	Term or array of terms.
-	 * @param	array			Array of arguments
+	 * @param	string or array		Term or array of terms.
+	 * @param	array				Array of arguments
+	 * @return	DQueryClauseWhere	Object for method chaining.
 	 */
 	public function addTerm( $terms, $args = array() )
 	{

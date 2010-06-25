@@ -35,7 +35,9 @@ class DQueryClauseJoin
 	 * Argument can be a string giving the name of a table, or
 	 * an array of table names, or an array of table name/alias pairs.
 	 *
-	 * @param	string or array	Term or array of terms.
+	 * @param	string or array		Term or array of terms.
+	 * @param	array				Array of arguments
+	 * @return	DQueryClauseJoin	Object for method chaining.
 	 */
 	public function addTerm( $terms, $args = array() )
 	{

@@ -36,7 +36,9 @@ class DQueryClauseColumns
 	 * Argument can be a string giving the name of a column, or
 	 * an array of column names, or an array of column name/alias pairs.
 	 *
-	 * @param	string or array	Term or array of terms.
+	 * @param	string or array		Term or array of terms.
+	 * @param	array				Array of arguments
+	 * @return	DQueryClauseColumns Object for method chaining.
 	 */
 	public function addTerm( $terms, $args = array() )
 	{
@@ -51,6 +53,8 @@ class DQueryClauseColumns
 			}
 
 		}
+
+		return $this;
 	}
 }
 

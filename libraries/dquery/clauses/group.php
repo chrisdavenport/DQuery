@@ -32,8 +32,9 @@ class DQueryClauseGroup
 	/**
 	 * Add a term to the query clause.
 	 *
-	 * @param	string or array	Term or array of terms.
-	 * @param	array			Array of arguments
+	 * @param	string or array		Term or array of terms.
+	 * @param	array				Array of arguments
+	 * @return	DQueryClauseGroup	Object for method chaining.
 	 */
 	public function addTerm( $terms, $args = array() )
 	{
@@ -44,6 +45,8 @@ class DQueryClauseGroup
 				$this->terms[] = trim( $term );
 			}
 		}
+
+		return $this;
 	}
 
 }
